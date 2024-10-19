@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 
-	"github.com/marifsulaksono/go-echo-boilerplate/internal/repository/contract"
+	"github.com/marifsulaksono/go-echo-boilerplate/internal/repository/interfaces"
 	"gorm.io/gorm"
 )
 
@@ -11,7 +11,7 @@ type userRepository struct {
 	DB *gorm.DB
 }
 
-func NewUserRepository(db *gorm.DB) contract.UserRepository {
+func NewUserRepository(db *gorm.DB) interfaces.UserRepository {
 	return &userRepository{
 		DB: db,
 	}

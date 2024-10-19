@@ -5,11 +5,11 @@ import (
 
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/contract/common"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/repository"
-	"github.com/marifsulaksono/go-echo-boilerplate/internal/repository/contract"
+	"github.com/marifsulaksono/go-echo-boilerplate/internal/repository/interfaces"
 )
 
 type Contract struct {
-	User contract.UserRepository
+	User interfaces.UserRepository
 }
 
 func NewRepository(ctx context.Context, common *common.Contract) (*Contract, error) {

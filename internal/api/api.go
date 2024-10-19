@@ -26,7 +26,7 @@ func NewHTTPServer(c *contract.Contract) HTTPServer {
 
 func (s *HTTPServer) RunHTTPServer() {
 	v1 := routes.InitVersion(s.e, "/api/v1", s.c)
-	v1.UserAndAuth()
+	routes.RouteV1(&v1)
 
 	port := fmt.Sprintf(":%d", config.Config.App.Port)
 	if err := s.e.Start(port); err != nil {

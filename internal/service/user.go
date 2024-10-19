@@ -4,11 +4,11 @@ import (
 	"context"
 
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/contract/repository"
-	"github.com/marifsulaksono/go-echo-boilerplate/internal/repository/contract"
+	"github.com/marifsulaksono/go-echo-boilerplate/internal/repository/interfaces"
 )
 
 type userService struct {
-	Repository contract.UserRepository
+	Repository interfaces.UserRepository
 }
 
 type UserService interface {
