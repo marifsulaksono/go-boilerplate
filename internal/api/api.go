@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/api/routes"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/config"
@@ -17,6 +18,7 @@ type HTTPServer struct {
 
 func NewHTTPServer(c *contract.Contract) HTTPServer {
 	e := echo.New()
+	e.Validator = config.NewValidator(validator.New())
 
 	return HTTPServer{
 		e: e,

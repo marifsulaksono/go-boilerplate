@@ -27,7 +27,7 @@ func (db *Database) ConnectDatabase(ctx context.Context, database string) (DB *g
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
 		logger.Config{
-			SlowThreshold:             time.Microsecond, // Slow SQL threshold
+			SlowThreshold:             time.Millisecond, // Slow SQL threshold
 			LogLevel:                  logger.Info,      // Log level
 			IgnoreRecordNotFoundError: true,             // Ignore ErrRecordNotFound error for logger
 			ParameterizedQueries:      true,             // Don't include params in the SQL log

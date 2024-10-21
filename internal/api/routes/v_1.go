@@ -7,4 +7,8 @@ func RouteV1(r *APIVersion) {
 
 	user := r.api.Group("/users")
 	user.GET("", userController.Get)
+	user.GET("/:id", userController.GetById)
+	user.POST("", userController.Create)
+	user.PUT("/:id", userController.Update)
+	user.DELETE("/:id", userController.Delete)
 }

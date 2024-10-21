@@ -20,6 +20,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error setup contract / dependecy injection: %v", err)
 	}
+	contact.Common.AutoMigrate()
 
 	e := api.NewHTTPServer(contact)
 	e.RunHTTPServer()
