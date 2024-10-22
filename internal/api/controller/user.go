@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/api/dto"
+	"github.com/marifsulaksono/go-echo-boilerplate/internal/pkg/helper"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/service"
 	"gorm.io/gorm"
 )
@@ -54,11 +55,7 @@ func (h *UserController) Create(c echo.Context) error {
 		request dto.UserRequest
 	)
 
-	if err := c.Bind(&request); err != nil {
-		return c.JSON(400, err.Error())
-	}
-
-	if err := c.Validate(&request); err != nil {
+	if err := helper.BindRequest(c, &request, false); err != nil {
 		return c.JSON(400, err.Error())
 	}
 
@@ -77,11 +74,7 @@ func (h *UserController) Update(c echo.Context) error {
 		request dto.UserRequest
 	)
 
-	if err := c.Bind(&request); err != nil {
-		return c.JSON(400, err.Error())
-	}
-
-	if err := c.Validate(&request); err != nil {
+	if err := helper.BindRequest(c, &request, false); err != nil {
 		return c.JSON(400, err.Error())
 	}
 
