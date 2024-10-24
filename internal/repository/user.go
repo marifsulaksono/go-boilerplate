@@ -30,6 +30,11 @@ func (r *userRepository) GetById(ctx context.Context, id uuid.UUID) (data *model
 	return
 }
 
+func (r *userRepository) GetByEmail(ctx context.Context, email string) (data *model.User, err error) {
+	err = r.DB.Where("email = ?", email).First(&data).Error
+	return
+}
+
 func (r *userRepository) Create(ctx context.Context, payload *model.User) (data *model.UserResponse, err error) {
 	data = new(model.UserResponse)
 	err = r.DB.WithContext(ctx).Create(&payload).Clauses(clause.Returning{

@@ -10,6 +10,7 @@ import (
 type Configuration struct {
 	App      App      `json:"app"`
 	Database Database `json:"database"`
+	JWT      JWT      `json:"jwt"`
 }
 
 var Config *Configuration
@@ -40,6 +41,12 @@ func Load(ctx context.Context, isEnvFile bool) error {
 			Username: viper.GetString("database.username"),
 			Password: viper.GetString("database.password"),
 			Name:     viper.GetString("database.name"),
+		},
+		JWT: JWT{
+			AccessSecret:       viper.GetString("jwt.access_secret_key"),
+			RefreshSecret:      viper.GetString("jwt.refresh_secret_key"),
+			AccessExpiryInSec:  viper.GetInt("jwt.access_expiry_in_second"),
+			RefreshExpiryInSec: viper.GetInt("jwt.refresh_expiry_in_second"),
 		},
 	}
 

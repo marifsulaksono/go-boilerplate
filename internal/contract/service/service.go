@@ -9,12 +9,15 @@ import (
 
 type Contract struct {
 	User service.UserService
+	Auth service.AuthService
 }
 
 func NewService(ctx context.Context, r *repository.Contract) (*Contract, error) {
 	user := service.NewUserService(r)
+	auth := service.NewAuthService(r)
 
 	return &Contract{
 		User: user,
+		Auth: auth,
 	}, nil
 }
