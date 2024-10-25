@@ -2,9 +2,12 @@ package repository
 
 import (
 	"context"
+	"errors"
+	"net/http"
 
 	"github.com/google/uuid"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/model"
+	"github.com/marifsulaksono/go-echo-boilerplate/internal/pkg/utils/response"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/repository/interfaces"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -27,6 +30,12 @@ func (r *userRepository) Get(ctx context.Context) (data *[]model.User, err error
 
 func (r *userRepository) GetById(ctx context.Context, id uuid.UUID) (data *model.User, err error) {
 	err = r.DB.First(&data, id).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, response.NewCustomError(http.StatusNotFound, "Data not found", nil)
+		}
+		return nil, response.NewCustomError(http.StatusInternalServerError, "Terjadi kesalahan pada server", err)
+	}
 	return
 }
 

@@ -36,7 +36,6 @@ func (s *authService) Login(ctx context.Context, payload *model.Login) (model.Lo
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(payload.Password))
 	if err != nil {
-		log.Println("Error compare:", err)
 		return model.LoginResponse{}, errors.New("informasi email atau password tidak sesuai")
 	}
 

@@ -2,11 +2,13 @@ package controller
 
 import (
 	"errors"
+	"net/http"
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/api/dto"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/pkg/helper"
+	"github.com/marifsulaksono/go-echo-boilerplate/internal/pkg/utils/response"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/service"
 	"gorm.io/gorm"
 )
@@ -41,12 +43,9 @@ func (h *UserController) GetById(c echo.Context) error {
 
 	data, err := h.Service.GetById(ctx, id)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return c.JSON(404, "Data Not Found")
-		}
-		return c.JSON(500, err.Error())
+		return response.BuildErrorResponse(c, err)
 	}
-	return c.JSON(200, data)
+	return response.BuildSuccessResponse(c, http.StatusOK, "Berhasil mendapatkan data user", data)
 }
 
 func (h *UserController) Create(c echo.Context) error {
