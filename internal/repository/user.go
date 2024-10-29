@@ -32,7 +32,7 @@ func (r *userRepository) GetById(ctx context.Context, id uuid.UUID) (data *model
 	err = r.DB.First(&data, id).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, response.NewCustomError(http.StatusNotFound, "Data not found", nil)
+			return nil, response.NewCustomError(http.StatusNotFound, "Data tidak ditemukan", nil)
 		}
 		return nil, response.NewCustomError(http.StatusInternalServerError, "Terjadi kesalahan pada server", err)
 	}

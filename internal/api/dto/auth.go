@@ -7,6 +7,10 @@ type (
 		Email    string `json:"email" validate:"required,email"`
 		Password string `json:"password" validate:"required"`
 	}
+
+	RefreshAccessTokenRequest struct {
+		RefreshToken string `json:"refresh_token" validate:"required"`
+	}
 )
 
 func (l *LoginRequest) ParseToModel() *model.Login {

@@ -2,12 +2,13 @@ package service
 
 import (
 	"context"
-	"errors"
 	"log"
+	"net/http"
 
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/contract/repository"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/model"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/pkg/helper"
+	"github.com/marifsulaksono/go-echo-boilerplate/internal/pkg/utils/response"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/repository/interfaces"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -18,7 +19,8 @@ type authService struct {
 }
 
 type AuthService interface {
-	Login(ctx context.Context, payload *model.Login) (model.LoginResponse, error)
+	Login(ctx context.Context, payload *model.Login, ip string) (model.LoginResponse, error)
+	RefreshAccessToken(ctx context.Context, refreshToken string) (*model.LoginResponse, error)
 }
 
 func NewAuthService(r *repository.Contract) AuthService {
@@ -28,30 +30,69 @@ func NewAuthService(r *repository.Contract) AuthService {
 	}
 }
 
-func (s *authService) Login(ctx context.Context, payload *model.Login) (model.LoginResponse, error) {
+func (s *authService) Login(ctx context.Context, payload *model.Login, ip string) (model.LoginResponse, error) {
 	user, err := s.UserRepository.GetByEmail(ctx, payload.Email)
 	if err != nil {
-		return model.LoginResponse{}, errors.New("informasi email atau password tidak sesuai")
+		return model.LoginResponse{}, response.NewCustomError(http.StatusUnauthorized, "Informasi email atau password tidak sesuai", err)
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(payload.Password))
 	if err != nil {
-		return model.LoginResponse{}, errors.New("informasi email atau password tidak sesuai")
+		log.Printf("Error compare password: %v", err)
+		return model.LoginResponse{}, response.NewCustomError(http.StatusUnauthorized, "Informasi email atau password tidak sesuai", err)
 	}
 
 	accessToken, expiredAt, err := helper.GenerateTokenJWT(user, false)
 	if err != nil {
 		log.Printf("Gagal generate access token: %v", err)
-		return model.LoginResponse{}, errors.New("gagal menerbitkan token")
+		return model.LoginResponse{}, response.NewCustomError(http.StatusInternalServerError, "Gagal menerbitkan token", nil)
 	}
 
 	refreshToken, _, err := helper.GenerateTokenJWT(user, true)
 	if err != nil {
 		log.Printf("Gagal generate refresh token: %v", err)
-		return model.LoginResponse{}, errors.New("gagal menerbitkan token")
+		return model.LoginResponse{}, response.NewCustomError(http.StatusInternalServerError, "Gagal menerbitkan token", nil)
+	}
+
+	if err := s.AuthRepository.Store(ctx, &model.TokenAuth{
+		RefreshToken: refreshToken,
+		UserID:       user.ID.String(),
+		IP:           ip,
+	}); err != nil {
+		log.Printf("Gagal menyimpan token ke database: %v", err)
+		return model.LoginResponse{}, response.NewCustomError(http.StatusInternalServerError, "Gagal ketika menyimpan token ke database", nil)
 	}
 
 	return model.LoginResponse{
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+		Metadata: map[string]interface{}{
+			"name":       user.Name,
+			"email":      user.Email,
+			"expired_at": expiredAt,
+		},
+	}, nil
+}
+
+func (s *authService) RefreshAccessToken(ctx context.Context, refreshToken string) (*model.LoginResponse, error) {
+	token, err := s.AuthRepository.GetTokenAuthByRefreshToken(ctx, refreshToken)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := helper.VerifyTokenJWT(token.RefreshToken, true)
+	if err != nil {
+		log.Printf("Gagal memverifikasi refresh token: %v", err)
+		return nil, response.NewCustomError(http.StatusInternalServerError, "Gagal memverifikasi token", nil)
+	}
+
+	accessToken, expiredAt, err := helper.GenerateTokenJWT(user, false)
+	if err != nil {
+		log.Printf("Gagal generate access token: %v", err)
+		return nil, response.NewCustomError(http.StatusInternalServerError, "Gagal menerbitkan token", nil)
+	}
+
+	return &model.LoginResponse{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 		Metadata: map[string]interface{}{

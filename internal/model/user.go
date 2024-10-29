@@ -7,7 +7,7 @@ import (
 
 type (
 	User struct {
-		ID       uuid.UUID `json:"id" gorm:"type:char(36)"`
+		ID       uuid.UUID `json:"id" gorm:"primaryKey;type:char(36)"`
 		Name     string    `json:"name" gorm:"type:char(100)"`
 		Email    string    `json:"email" gorm:"type:char(255)"`
 		Password string    `json:"-"`
@@ -15,9 +15,9 @@ type (
 	}
 
 	UserResponse struct {
-		ID    uuid.UUID `json:"id" gorm:"type:char(36)"`
-		Name  string    `json:"name" gorm:"type:char(100)"`
-		Email string    `json:"email" gorm:"type:char(255)"`
+		ID    uuid.UUID `json:"id"`
+		Name  string    `json:"name"`
+		Email string    `json:"email"`
 		Model
 	}
 )

@@ -1,9 +1,12 @@
 package controller
 
 import (
+	"net/http"
+
 	"github.com/labstack/echo/v4"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/api/dto"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/pkg/helper"
+	"github.com/marifsulaksono/go-echo-boilerplate/internal/pkg/utils/response"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/service"
 )
 
@@ -20,17 +23,36 @@ func NewAuthController(s service.AuthService) *AuthController {
 func (h *AuthController) Login(c echo.Context) error {
 	var (
 		ctx     = c.Request().Context()
+		ip      = c.RealIP()
 		request dto.LoginRequest
 	)
 
 	if err := helper.BindRequest(c, &request, false); err != nil {
-		return err
+		return response.BuildErrorResponse(c, err)
 	}
 
-	data, err := h.Service.Login(ctx, request.ParseToModel())
+	data, err := h.Service.Login(ctx, request.ParseToModel(), ip)
 	if err != nil {
-		return c.JSON(500, err.Error())
+		return response.BuildErrorResponse(c, err)
 	}
 
-	return c.JSON(200, data)
+	return response.BuildSuccessResponse(c, http.StatusOK, "Login berhasil", data)
+}
+
+func (h *AuthController) RefreshAccessToken(c echo.Context) error {
+	var (
+		ctx     = c.Request().Context()
+		request dto.RefreshAccessTokenRequest
+	)
+
+	if err := helper.BindRequest(c, &request, false); err != nil {
+		return response.BuildErrorResponse(c, err)
+	}
+
+	data, err := h.Service.RefreshAccessToken(ctx, request.RefreshToken)
+	if err != nil {
+		return response.BuildErrorResponse(c, err)
+	}
+
+	return response.BuildSuccessResponse(c, http.StatusOK, "Berhasil mendapatkan access token baru", data)
 }

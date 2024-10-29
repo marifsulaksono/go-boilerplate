@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -10,7 +9,6 @@ import (
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/pkg/helper"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/pkg/utils/response"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/service"
-	"gorm.io/gorm"
 )
 
 type UserController struct {
@@ -30,9 +28,9 @@ func (h *UserController) Get(c echo.Context) error {
 
 	data, err := h.Service.Get(ctx)
 	if err != nil {
-		return c.JSON(500, err.Error())
+		return response.BuildErrorResponse(c, err)
 	}
-	return c.JSON(200, data)
+	return response.BuildSuccessResponse(c, http.StatusOK, "Berhasil mendapatkan data user", data)
 }
 
 func (h *UserController) GetById(c echo.Context) error {
@@ -55,15 +53,15 @@ func (h *UserController) Create(c echo.Context) error {
 	)
 
 	if err := helper.BindRequest(c, &request, false); err != nil {
-		return c.JSON(400, err.Error())
+		return response.BuildErrorResponse(c, err)
 	}
 
-	user, err := h.Service.Create(ctx, request.ParseToModel())
+	data, err := h.Service.Create(ctx, request.ParseToModel())
 	if err != nil {
-		return c.JSON(400, err.Error())
+		return response.BuildErrorResponse(c, err)
 	}
 
-	return c.JSON(201, user)
+	return response.BuildSuccessResponse(c, http.StatusCreated, "Berhasil menyimpan data user", data)
 }
 
 func (h *UserController) Update(c echo.Context) error {
@@ -74,18 +72,15 @@ func (h *UserController) Update(c echo.Context) error {
 	)
 
 	if err := helper.BindRequest(c, &request, false); err != nil {
-		return c.JSON(400, err.Error())
+		return response.BuildErrorResponse(c, err)
 	}
 
-	user, err := h.Service.Update(ctx, request.ParseToModel(), id)
+	data, err := h.Service.Update(ctx, request.ParseToModel(), id)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return c.JSON(404, "Data Not Found")
-		}
-		return c.JSON(500, err.Error())
+		return response.BuildErrorResponse(c, err)
 	}
 
-	return c.JSON(200, user)
+	return response.BuildSuccessResponse(c, http.StatusOK, "Berhasil memperbarui data user", data)
 }
 
 func (h *UserController) Delete(c echo.Context) error {
@@ -95,8 +90,8 @@ func (h *UserController) Delete(c echo.Context) error {
 	)
 
 	if err := h.Service.Delete(ctx, id); err != nil {
-		return c.JSON(500, err.Error())
+		return response.BuildErrorResponse(c, err)
 	}
 
-	return c.JSON(200, "Berhasil")
+	return response.BuildSuccessResponse(c, http.StatusOK, "Berhasil menghapus data user", nil)
 }

@@ -26,7 +26,10 @@ func NewCommon(ctx context.Context) (*Contract, error) {
 }
 
 func (c *Contract) AutoMigrate() {
-	if err := c.DB.AutoMigrate(&model.User{}); err != nil {
+	if err := c.DB.AutoMigrate(
+		&model.User{},
+		&model.TokenAuth{},
+	); err != nil {
 		log.Fatalf("Error on migration database: %v", err)
 	}
 	log.Println("Migration successfully.....")
