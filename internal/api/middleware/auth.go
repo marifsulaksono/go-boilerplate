@@ -1,10 +1,12 @@
 package middleware
 
 import (
+	"net/http"
 	"strings"
 
 	"github.com/labstack/echo/v4"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/pkg/helper"
+	"github.com/marifsulaksono/go-echo-boilerplate/internal/pkg/utils/response"
 )
 
 func JWTMiddleware() echo.MiddlewareFunc {
@@ -13,11 +15,13 @@ func JWTMiddleware() echo.MiddlewareFunc {
 			authHeader := c.Request().Header.Get("Authorization")
 			tokenString := strings.TrimPrefix(authHeader, "Bearer ")
 			if tokenString == "" {
-				return c.JSON(401, "Invalid token")
+				err := response.NewCustomError(http.StatusUnauthorized, "Invalid token", nil)
+				return response.BuildErrorResponse(c, err)
 			}
 			user, err := helper.VerifyTokenJWT(tokenString, false)
 			if err != nil {
-				return c.JSON(401, "Invalid token")
+				err := response.NewCustomError(http.StatusUnauthorized, "Invalid token", nil)
+				return response.BuildErrorResponse(c, err)
 			}
 
 			c.Set("user", user) // set saves data in the context

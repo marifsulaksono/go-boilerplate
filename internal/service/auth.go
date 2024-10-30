@@ -21,6 +21,7 @@ type authService struct {
 type AuthService interface {
 	Login(ctx context.Context, payload *model.Login, ip string) (model.LoginResponse, error)
 	RefreshAccessToken(ctx context.Context, refreshToken string) (*model.LoginResponse, error)
+	Logout(ctx context.Context, refreshToken string) error
 }
 
 func NewAuthService(r *repository.Contract) AuthService {
@@ -66,10 +67,10 @@ func (s *authService) Login(ctx context.Context, payload *model.Login, ip string
 	return model.LoginResponse{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
-		Metadata: map[string]interface{}{
-			"name":       user.Name,
-			"email":      user.Email,
-			"expired_at": expiredAt,
+		Metadata: model.MetadataLoginResponse{
+			Name:      user.Name,
+			Email:     user.Email,
+			ExpiredAt: *expiredAt,
 		},
 	}, nil
 }
@@ -95,10 +96,14 @@ func (s *authService) RefreshAccessToken(ctx context.Context, refreshToken strin
 	return &model.LoginResponse{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
-		Metadata: map[string]interface{}{
-			"name":       user.Name,
-			"email":      user.Email,
-			"expired_at": expiredAt,
+		Metadata: model.MetadataLoginResponse{
+			Name:      user.Name,
+			Email:     user.Email,
+			ExpiredAt: *expiredAt,
 		},
 	}, nil
+}
+
+func (s *authService) Logout(ctx context.Context, refreshToken string) error {
+	return s.AuthRepository.Delete(ctx, refreshToken)
 }

@@ -1,5 +1,7 @@
 package model
 
+import "time"
+
 type (
 	Login struct {
 		GrantType string `json:"grant_type"`
@@ -9,9 +11,15 @@ type (
 	}
 
 	LoginResponse struct {
-		AccessToken  string                 `json:"access_token"`
-		RefreshToken string                 `json:"refresh_token"`
-		Metadata     map[string]interface{} `json:"metadata"`
+		AccessToken  string                `json:"access_token"`
+		RefreshToken string                `json:"refresh_token"`
+		Metadata     MetadataLoginResponse `json:"metadata"`
+	}
+
+	MetadataLoginResponse struct {
+		Name      string    `json:"name"`
+		Email     string    `json:"email"`
+		ExpiredAt time.Time `json:"expired_at"`
 	}
 )
 

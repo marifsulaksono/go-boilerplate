@@ -61,7 +61,7 @@ func (h *UserController) Create(c echo.Context) error {
 		return response.BuildErrorResponse(c, err)
 	}
 
-	return response.BuildSuccessResponse(c, http.StatusCreated, "Berhasil menyimpan data user", data)
+	return response.BuildSuccessResponse(c, http.StatusCreated, "Berhasil menyimpan data user", map[string]string{"id": data})
 }
 
 func (h *UserController) Update(c echo.Context) error {
@@ -80,7 +80,7 @@ func (h *UserController) Update(c echo.Context) error {
 		return response.BuildErrorResponse(c, err)
 	}
 
-	return response.BuildSuccessResponse(c, http.StatusOK, "Berhasil memperbarui data user", data)
+	return response.BuildSuccessResponse(c, http.StatusOK, "Berhasil memperbarui data user", map[string]string{"id": data})
 }
 
 func (h *UserController) Delete(c echo.Context) error {

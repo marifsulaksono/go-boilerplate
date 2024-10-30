@@ -14,6 +14,7 @@ func RouteV1(av *APIVersion) {
 
 	auth.POST("/login", authController.Login)
 	auth.POST("/new-access-token", authController.RefreshAccessToken)
+	auth.POST("/logout", authController.Logout)
 
 	// user routes
 	user := av.api.Group("/users")

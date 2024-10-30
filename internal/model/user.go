@@ -13,13 +13,6 @@ type (
 		Password string    `json:"-"`
 		Model
 	}
-
-	UserResponse struct {
-		ID    uuid.UUID `json:"id"`
-		Name  string    `json:"name"`
-		Email string    `json:"email"`
-		Model
-	}
 )
 
 func (u *User) BeforeCreate(tx *gorm.DB) error {

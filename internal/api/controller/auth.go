@@ -56,3 +56,21 @@ func (h *AuthController) RefreshAccessToken(c echo.Context) error {
 
 	return response.BuildSuccessResponse(c, http.StatusOK, "Berhasil mendapatkan access token baru", data)
 }
+
+func (h *AuthController) Logout(c echo.Context) error {
+	var (
+		ctx     = c.Request().Context()
+		request dto.RefreshAccessTokenRequest
+	)
+
+	if err := helper.BindRequest(c, &request, false); err != nil {
+		return response.BuildErrorResponse(c, err)
+	}
+
+	err := h.Service.Logout(ctx, request.RefreshToken)
+	if err != nil {
+		return response.BuildErrorResponse(c, err)
+	}
+
+	return response.BuildSuccessResponse(c, http.StatusOK, "Logout berhasil", nil)
+}
