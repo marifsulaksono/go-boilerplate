@@ -3,6 +3,9 @@ package main
 import (
 	"context"
 	"log"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/api"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/config"
@@ -23,5 +26,15 @@ func main() {
 	contact.Common.AutoMigrate()
 
 	e := api.NewHTTPServer(contact)
-	e.RunHTTPServer()
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, syscall.SIGTERM, syscall.SIGINT)
+	go func() {
+		e.RunHTTPServer()
+	}()
+
+	<-sig
+
+	log.Println("Shutting down....")
+	// put all processes to be stopped before successful termination here
+	log.Println("Server gracefully terminated.")
 }
