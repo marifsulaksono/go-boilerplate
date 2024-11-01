@@ -25,6 +25,40 @@ func (r *userRepository) Get(ctx context.Context) (data *[]model.User, err error
 	return
 }
 
+func (r *userRepository) GetWithPagination(ctx context.Context, params *model.Pagination) (data *model.PaginationResponse, err error) {
+	var users []model.User
+	offset := (params.Page - 1) * params.Limit
+	db := r.DB
+	if params.Page > 0 {
+		db = db.Offset(offset)
+	}
+
+	if params.Limit > 0 {
+		db = db.Limit(params.Limit)
+	}
+
+	err = db.Find(&users).Error
+	if err != nil {
+		return nil, err
+	}
+
+	var count int64
+	err = r.DB.Model(&model.User{}).Where("deleted_at IS NULL").Count(&count).Error
+	if err != nil {
+		return nil, err
+	}
+
+	data = &model.PaginationResponse{
+		List:         users,
+		Page:         params.Page,
+		Limit:        params.Limit,
+		TotalPerPage: len(users),
+		TotalData:    int(count),
+	}
+
+	return
+}
+
 func (r *userRepository) GetById(ctx context.Context, id uuid.UUID) (data *model.User, err error) {
 	err = r.DB.First(&data, id).Error
 	return

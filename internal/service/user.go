@@ -21,6 +21,7 @@ type userService struct {
 
 type UserService interface {
 	Get(ctx context.Context) (*[]model.User, error)
+	GetWithPagination(ctx context.Context, params *model.Pagination) (data *model.PaginationResponse, err error)
 	GetById(ctx context.Context, id uuid.UUID) (*model.User, error)
 	GetByEmail(ctx context.Context, email string) (*model.User, error)
 	Create(ctx context.Context, payload *model.User) (string, error)
@@ -36,6 +37,10 @@ func NewUserService(r *repository.Contract) UserService {
 
 func (s *userService) Get(ctx context.Context) (*[]model.User, error) {
 	return s.UserRepository.Get(ctx)
+}
+
+func (s *userService) GetWithPagination(ctx context.Context, params *model.Pagination) (data *model.PaginationResponse, err error) {
+	return s.UserRepository.GetWithPagination(ctx, params)
 }
 
 func (s *userService) GetById(ctx context.Context, id uuid.UUID) (data *model.User, err error) {

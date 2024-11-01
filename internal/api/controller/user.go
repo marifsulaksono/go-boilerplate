@@ -2,10 +2,12 @@ package controller
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/api/dto"
+	"github.com/marifsulaksono/go-echo-boilerplate/internal/model"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/pkg/helper"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/pkg/utils/response"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/service"
@@ -23,10 +25,15 @@ func NewUserController(s service.UserService) *UserController {
 
 func (h *UserController) Get(c echo.Context) error {
 	var (
-		ctx = c.Request().Context()
+		ctx        = c.Request().Context()
+		pagination model.Pagination
 	)
 
-	data, err := h.Service.Get(ctx)
+	pagination.Page, _ = strconv.Atoi(c.QueryParam("page"))
+	pagination.Limit, _ = strconv.Atoi(c.QueryParam("limit"))
+	pagination.SetDefault()
+
+	data, err := h.Service.GetWithPagination(ctx, &pagination)
 	if err != nil {
 		return response.BuildErrorResponse(c, err)
 	}
