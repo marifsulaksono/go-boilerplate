@@ -15,6 +15,11 @@ type Redis struct {
 	Password string `json:"password"`
 }
 
+/*
+Initialize new redis client, to support redis usage
+
+more info contact me @marifsulaksono
+*/
 func (r *Redis) InitRedisClient() (*redis.Client, error) {
 	client := redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%s", r.Host, r.Port),
