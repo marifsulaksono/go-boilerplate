@@ -30,23 +30,31 @@ func Load(ctx context.Context, isEnvFile bool) error {
 		}
 	}
 
+	/*
+		viper get value is depend on configuration file.
+		if using file .env, please use variable name. e.g APP_PORT
+		if using file yaml, toml, or file with tree concept, please use path name, e.g app.port
+
+		more info contact me @marifsulaksono
+	*/
+
 	// prepare configuration values
 	Config = &Configuration{
 		App: App{
-			Port: viper.GetInt("app.port"),
+			Port: viper.GetInt("APP_PORT"),
 		},
 		Database: Database{
-			Host:     viper.GetString("database.host"),
-			Port:     viper.GetString("database.port"),
-			Username: viper.GetString("database.username"),
-			Password: viper.GetString("database.password"),
-			Name:     viper.GetString("database.name"),
+			Host:     viper.GetString("DATABASE_HOST"),
+			Port:     viper.GetString("DATABASE_PORT"),
+			Username: viper.GetString("DATABASE_USERNAME"),
+			Password: viper.GetString("DATABASE_PASSWORD"),
+			Name:     viper.GetString("DATABASE_NAME"),
 		},
 		JWT: JWT{
-			AccessSecret:       viper.GetString("jwt.access_secret_key"),
-			RefreshSecret:      viper.GetString("jwt.refresh_secret_key"),
-			AccessExpiryInSec:  viper.GetInt("jwt.access_expiry_in_second"),
-			RefreshExpiryInSec: viper.GetInt("jwt.refresh_expiry_in_second"),
+			AccessSecret:       viper.GetString("JWT_ACCESS_SECRET_KEY"),
+			RefreshSecret:      viper.GetString("JWT_REFRESH_SECRET_KEY"),
+			AccessExpiryInSec:  viper.GetInt("JWT_ACCESS_EXPIRY_IN_SECOND"),
+			RefreshExpiryInSec: viper.GetInt("JWT_REFRESH_EXPIRY_IN_SECOND"),
 		},
 	}
 

@@ -27,6 +27,6 @@ type (
 	TokenAuth struct {
 		RefreshToken string `json:"refresh_token" gorm:"not null"`
 		UserID       string `json:"user_id" gorm:"not null"`
-		IP           string `json:"ip" gorm:"not null;char(128)"`
+		IP           string `json:"ip" gorm:"not null;varchar(128)"`
 	}
 )

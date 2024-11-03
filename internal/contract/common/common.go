@@ -15,7 +15,7 @@ type Contract struct {
 }
 
 func NewCommon(ctx context.Context) (*Contract, error) {
-	db, err := config.Config.Database.ConnectDatabase(ctx, constants.DB_MYSQL)
+	db, err := config.Config.Database.ConnectDatabase(ctx, constants.DB_POSTGRESQL)
 	if err != nil {
 		return nil, err
 	}

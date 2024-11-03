@@ -14,9 +14,9 @@ import (
 
 func main() {
 	var ctx = context.Background()
-	err := config.Load(ctx, false)
+	err := config.Load(ctx, true)
 	if err != nil {
-		log.Fatalf("Error load configuration: %v", err)
+		log.Fatalf("Error load configuration with value isEnvFile = true: %v", err)
 	}
 
 	contact, err := contract.NewContract(ctx)
