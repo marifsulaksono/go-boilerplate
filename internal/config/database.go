@@ -35,6 +35,13 @@ func (db *Database) ConnectDatabase(ctx context.Context, database string) (DB *g
 		},
 	)
 
+	/*
+		Mapping to connect various sql database such as MySQL, Postgres, SQL Server
+		Customize to your needs
+
+		more info contact me @marifsulaksono
+	*/
+
 	switch database {
 	case constants.DB_MYSQL:
 		DB, err = db.mysqlConnector(&newLogger)

@@ -14,7 +14,7 @@ type Contract struct {
 }
 
 func NewRepository(ctx context.Context, common *common.Contract) (*Contract, error) {
-	user := repository.NewUserRepository(common.DB)
+	user := repository.NewUserRepository(common.DB, common.Redis)
 	auth := repository.NewAuthRepository(common.DB)
 
 	return &Contract{

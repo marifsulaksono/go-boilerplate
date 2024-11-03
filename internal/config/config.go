@@ -11,6 +11,7 @@ type Configuration struct {
 	App      App      `json:"app"`
 	Database Database `json:"database"`
 	JWT      JWT      `json:"jwt"`
+	Redis    Redis    `json:"redis"`
 }
 
 var Config *Configuration
@@ -55,6 +56,11 @@ func Load(ctx context.Context, isEnvFile bool) error {
 			RefreshSecret:      viper.GetString("JWT_REFRESH_SECRET_KEY"),
 			AccessExpiryInSec:  viper.GetInt("JWT_ACCESS_EXPIRY_IN_SECOND"),
 			RefreshExpiryInSec: viper.GetInt("JWT_REFRESH_EXPIRY_IN_SECOND"),
+		},
+		Redis: Redis{
+			Host:     viper.GetString("REDIS_HOST"),
+			Port:     viper.GetString("REDIS_PORT"),
+			Password: viper.GetString("REDIS_PASSWORD"),
 		},
 	}
 

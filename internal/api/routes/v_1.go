@@ -2,7 +2,6 @@ package routes
 
 import (
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/api/controller"
-	"github.com/marifsulaksono/go-echo-boilerplate/internal/api/middleware"
 )
 
 func RouteV1(av *APIVersion) {
@@ -18,7 +17,7 @@ func RouteV1(av *APIVersion) {
 
 	// user routes
 	user := av.api.Group("/users")
-	user.Use(middleware.JWTMiddleware()) // use middleware jwt general on user routes
+	// user.Use(middleware.JWTMiddleware()) // use middleware jwt general on user routes
 
 	user.GET("", userController.Get)
 	user.GET("/:id", userController.GetById)

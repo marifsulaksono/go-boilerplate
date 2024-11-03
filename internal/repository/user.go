@@ -2,27 +2,58 @@ package repository
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
+	"log"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/model"
+	"github.com/marifsulaksono/go-echo-boilerplate/internal/pkg/helper"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/repository/interfaces"
+	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
 type userRepository struct {
-	DB *gorm.DB
+	DB    *gorm.DB
+	Redis *redis.Client
 }
 
-func NewUserRepository(db *gorm.DB) interfaces.UserRepository {
+func NewUserRepository(db *gorm.DB, rdscli *redis.Client) interfaces.UserRepository {
 	return &userRepository{
-		DB: db,
+		DB:    db,
+		Redis: rdscli,
 	}
 }
 
 func (r *userRepository) Get(ctx context.Context) (data *[]model.User, err error) {
-	err = r.DB.Find(&data).Error
-	return
+	const usersDataKey = "list-users-data"
+	cachedUsers, err := r.Redis.Get(ctx, usersDataKey).Result()
+	if err == nil {
+		if err = json.Unmarshal([]byte(cachedUsers), &data); err != nil {
+			log.Printf("Error unmarshaling user data from Redis: %v", err)
+		} else {
+			fmt.Println("From redis")
+			return data, nil
+		}
+	} else if err != redis.Nil {
+		log.Printf("Error fetching user data from Redis: %v", err)
+	}
+
+	data = &[]model.User{}
+	if err := r.DB.Find(&data).Error; err != nil {
+		return nil, err
+	}
+
+	err = helper.SetRedisJSONCache(ctx, r.Redis, usersDataKey, data, time.Duration(300)*time.Second)
+	if err != nil {
+		log.Printf("Error setting user data in Redis: %v", err)
+	}
+
+	fmt.Println("From databasae")
+	return data, nil
 }
 
 func (r *userRepository) GetWithPagination(ctx context.Context, params *model.Pagination) (data *model.PaginationResponse, err error) {

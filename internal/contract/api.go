@@ -14,6 +14,11 @@ type Contract struct {
 	Common     *common.Contract
 }
 
+/*
+This prt is the place to prepare dependency injection on internal projects.
+
+more info contact me @marifsulaksono
+*/
 func NewContract(ctx context.Context) (*Contract, error) {
 	common, err := common.NewCommon(ctx)
 	if err != nil {

@@ -7,11 +7,13 @@ import (
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/config"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/constants"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/model"
+	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
 
 type Contract struct {
-	DB *gorm.DB
+	DB    *gorm.DB
+	Redis *redis.Client
 }
 
 func NewCommon(ctx context.Context) (*Contract, error) {
@@ -20,8 +22,14 @@ func NewCommon(ctx context.Context) (*Contract, error) {
 		return nil, err
 	}
 
+	rediscli, err := config.Config.Redis.InitRedisClient()
+	if err != nil {
+		return nil, err
+	}
+
 	return &Contract{
-		DB: db,
+		DB:    db,
+		Redis: rediscli,
 	}, nil
 }
 

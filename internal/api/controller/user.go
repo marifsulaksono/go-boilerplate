@@ -33,7 +33,8 @@ func (h *UserController) Get(c echo.Context) error {
 	pagination.Limit, _ = strconv.Atoi(c.QueryParam("limit"))
 	pagination.SetDefault()
 
-	data, err := h.Service.GetWithPagination(ctx, &pagination)
+	data, err := h.Service.Get(ctx)
+	// data, err := h.Service.GetWithPagination(ctx, &pagination)
 	if err != nil {
 		return response.BuildErrorResponse(c, err)
 	}
