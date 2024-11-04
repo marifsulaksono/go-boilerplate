@@ -2,11 +2,14 @@ package routes
 
 import (
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/api/controller"
+	"github.com/marifsulaksono/go-echo-boilerplate/internal/api/middleware"
 )
 
 func RouteV1(av *APIVersion) {
 	userController := controller.NewUserController(av.contract.Service.User)
 	authController := controller.NewAuthController(av.contract.Service.Auth)
+
+	av.api.Use(middleware.LogMiddleware) // use middleware logger
 
 	// auth routes
 	auth := av.api.Group("/auth")

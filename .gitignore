@@ -1,3 +1,4 @@
+logs/
 config.yaml
 .env
 *.txt
