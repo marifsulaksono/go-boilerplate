@@ -14,6 +14,10 @@ COPY . .
 # Copy .env file
 COPY .env ./.env
 
+# Install certificates and build the application
+RUN apk --no-cache add ca-certificates && \
+    go build -ldflags="-w -s -extldflags '-static'" -o myapp ./cmd/api
+
 # Build the application
 RUN go build -o myapp ./cmd/api
 
@@ -24,6 +28,7 @@ FROM alpine:latest
 WORKDIR /app
 
 # Copy the binary from the builder stage
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /app/myapp .
 COPY --from=builder /app/.env .env
 
