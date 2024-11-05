@@ -14,13 +14,13 @@ func RouteV1(av *APIVersion) {
 	// auth routes
 	auth := av.api.Group("/auth")
 
-	auth.POST("/login", authController.Login)
+	auth.POST("/login", authController.Login, middleware.RateLimitMiddleware(5, 300)) // limit to 5 requests per 5 minutes
 	auth.POST("/new-access-token", authController.RefreshAccessToken)
 	auth.POST("/logout", authController.Logout)
 
 	// user routes
 	user := av.api.Group("/users")
-	// user.Use(middleware.JWTMiddleware()) // use middleware jwt general on user routes
+	user.Use(middleware.JWTMiddleware()) // use middleware jwt general on user routes
 
 	user.GET("", userController.Get)
 	user.GET("/:id", userController.GetById)

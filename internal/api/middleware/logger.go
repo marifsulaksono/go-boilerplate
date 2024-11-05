@@ -13,6 +13,18 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
+/*
+	this middleware is for logging request and response
+	this logger will write to file ./logs/app_{date}.log every day
+	you can use this middleware in your route
+
+	how to use it
+	1. import middleware
+	2. use middleware.LogMiddleware
+
+	more info contact me @marifsulaksono
+*/
+
 type CustomResponseWriter struct {
 	echo.Response
 	Body *bytes.Buffer

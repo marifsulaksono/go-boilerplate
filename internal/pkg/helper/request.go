@@ -28,6 +28,7 @@ func BindRequest(c echo.Context, payload interface{}, skipValidation bool) error
 	return nil
 }
 
+// this method is the same as c.Bind, but it also recycles the request body, so it can be read again.
 func GetPayloadAndRecycle(c echo.Context) (interface{}, error) {
 	if c.Request().Method == http.MethodDelete {
 		pathSegments := strings.Split(c.Request().URL.Path, "/")

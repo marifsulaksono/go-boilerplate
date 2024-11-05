@@ -9,6 +9,7 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+// Helper functions for setting data to Redis
 func SetRedisJSONCache(ctx context.Context, rds *redis.Client, key string, data interface{}, ttl time.Duration) error {
 	// Marshal the value into JSON format
 	jsonData, err := json.Marshal(data)

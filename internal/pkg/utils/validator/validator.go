@@ -8,6 +8,16 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+/*
+	this validator is for validating request body
+
+	how to use it
+	1. import validator
+	2. use validator.NewValidator()
+
+		more info contact me @marifsulaksono
+*/
+
 type CustomValidator struct {
 	Validator *validator.Validate
 }
