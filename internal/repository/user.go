@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"time"
 
@@ -35,7 +34,6 @@ func (r *userRepository) Get(ctx context.Context) (data *[]model.User, err error
 		if err = json.Unmarshal([]byte(cachedUsers), &data); err != nil {
 			log.Printf("Error unmarshaling user data from Redis: %v", err)
 		} else {
-			fmt.Println("From redis")
 			return data, nil
 		}
 	} else if err != redis.Nil {
@@ -52,7 +50,6 @@ func (r *userRepository) Get(ctx context.Context) (data *[]model.User, err error
 		log.Printf("Error setting user data in Redis: %v", err)
 	}
 
-	fmt.Println("From databasae")
 	return data, nil
 }
 
