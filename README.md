@@ -15,6 +15,8 @@ A clean architecture scalable and maintainable Go boilerplate project using Echo
 
 This project is a boilerplate template that provides a basic structure with a clean architecture implementation for building scalable and maintainable Go applications. It includes features such as authentication using JWT, database interaction using GORM, and temporary storage using Redis.
 
+You can use this repository for your template project by click [use this template](https://github.com/new?template_name=go-boilerplate&template_owner=marifsulaksono)
+
 ## Tech Stack
 
 * Go 1.23 (See [installation](https://go.dev/doc/install))
