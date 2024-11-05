@@ -31,7 +31,7 @@ func BuildErrorResponse(c echo.Context, err error) error {
 	if errors.As(err, &customErr) {
 		statusCode = customErr.StatusCode
 		message = customErr.Message
-		errorDetails = customErr.Error()
+		errorDetails = customErr.Err
 	} else {
 		statusCode = http.StatusInternalServerError
 		message = "An unexpected error occurred"
@@ -49,6 +49,8 @@ func BuildErrorResponse(c echo.Context, err error) error {
 		code = constants.RESPONSE_UNAUTHENTICATED
 	case http.StatusForbidden:
 		code = constants.RESPONSE_UNAUTHORIZED
+	case http.StatusTooManyRequests:
+		code = constants.RESPONSE_TOO_MANY_REQUESTS
 	case http.StatusInternalServerError:
 		code = constants.RESPONSE_INTERNAL_SERVER_ERROR
 	default:

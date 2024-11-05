@@ -9,6 +9,17 @@ import (
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/pkg/utils/response"
 )
 
+/*
+	this middleware is for verifying token
+	you can use this middleware in your route or group/global
+
+	how to use it
+	1. import middleware
+	2. use middleware.JWTMiddleware
+
+	more info contact me @marifsulaksono
+*/
+
 func JWTMiddleware() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
