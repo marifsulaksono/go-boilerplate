@@ -52,6 +52,8 @@ func Load(ctx context.Context, isEnvFile bool) error {
 			Name:     viper.GetString("DATABASE_NAME"),
 		},
 		JWT: JWT{
+			PrivateKeyPathFile: viper.GetString("JWT_PRIVATE_KEY_PATH_FILE"),
+			PublicKeyPathFile:  viper.GetString("JWT_PUBLIC_KEY_PATH_FILE"),
 			AccessSecret:       viper.GetString("JWT_ACCESS_SECRET_KEY"),
 			RefreshSecret:      viper.GetString("JWT_REFRESH_SECRET_KEY"),
 			AccessExpiryInSec:  viper.GetInt("JWT_ACCESS_EXPIRY_IN_SECOND"),

@@ -30,23 +30,28 @@ func BindRequest(c echo.Context, payload interface{}, skipValidation bool) error
 
 // this method is the same as c.Bind, but it also recycles the request body, so it can be read again.
 func GetPayloadAndRecycle(c echo.Context) (interface{}, error) {
-	if c.Request().Method == http.MethodDelete {
+	method := c.Request().Method
+	if method == http.MethodDelete {
 		pathSegments := strings.Split(c.Request().URL.Path, "/")
 		return pathSegments[len(pathSegments)-1], nil
 	}
 
-	// this method is the same as c.Bind
-	bodyBytes, err := io.ReadAll(c.Request().Body)
-	if err != nil {
-		return nil, response.NewCustomError(http.StatusBadRequest, "Failed to read request body", nil)
+	if method == http.MethodPost || method == http.MethodPut {
+		// this method is the same as c.Bind
+		bodyBytes, err := io.ReadAll(c.Request().Body)
+		if err != nil {
+			return nil, response.NewCustomError(http.StatusBadRequest, "Failed to read request body", nil)
+		}
+
+		// refill the body so it can be read again
+		c.Request().Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+
+		var payload map[string]interface{}
+		if err := json.Unmarshal(bodyBytes, &payload); err != nil {
+			return nil, response.NewCustomError(http.StatusBadRequest, "Failed to parse payload", nil)
+		}
+		return payload, nil
 	}
 
-	// refill the body so it can be read again
-	c.Request().Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
-
-	var payload map[string]interface{}
-	if err := json.Unmarshal(bodyBytes, &payload); err != nil {
-		return nil, response.NewCustomError(http.StatusBadRequest, "Failed to parse payload", nil)
-	}
-	return payload, nil
+	return nil, nil
 }

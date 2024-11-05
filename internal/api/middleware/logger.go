@@ -68,7 +68,7 @@ func LogMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		entry := LogEntry{
 			URL:      c.Request().URL.String(),
 			Method:   c.Request().Method,
-			IP:       c.Request().RemoteAddr,
+			IP:       c.RealIP(),
 			Body:     payload,
 			Response: response,
 		}

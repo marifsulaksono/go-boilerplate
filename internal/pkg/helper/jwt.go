@@ -1,6 +1,7 @@
 package helper
 
 import (
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -12,15 +13,22 @@ import (
 func GenerateTokenJWT(user *model.User, isRefresh bool) (string, *time.Time, error) {
 	var (
 		expiredInSecond int
-		secretKey       string
 	)
 
 	if isRefresh {
 		expiredInSecond = config.Config.JWT.RefreshExpiryInSec
-		secretKey = config.Config.JWT.RefreshSecret
 	} else {
 		expiredInSecond = config.Config.JWT.AccessExpiryInSec
-		secretKey = config.Config.JWT.AccessSecret
+	}
+
+	privateKeyBytes, err := os.ReadFile(config.Config.JWT.PrivateKeyPathFile)
+	if err != nil {
+		return "", nil, err
+	}
+
+	privateKey, err := jwt.ParseRSAPrivateKeyFromPEM(privateKeyBytes)
+	if err != nil {
+		return "", nil, err
 	}
 
 	expiredAt := time.Now().Add(time.Second * time.Duration(expiredInSecond))
@@ -28,14 +36,14 @@ func GenerateTokenJWT(user *model.User, isRefresh bool) (string, *time.Time, err
 		ID:    user.ID.String(),
 		Email: user.Name,
 		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    "venturo",
+			Issuer:    "muhammad-arif-sulaksono",
 			ExpiresAt: jwt.NewNumericDate(expiredAt),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
 	}
 
 	// Declare the token with the HS256 algorithm used for signing, and the claims.
-	tokenString, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(secretKey))
+	tokenString, err := jwt.NewWithClaims(jwt.SigningMethodRS512, claims).SignedString(privateKey)
 	if err != nil {
 		return "", nil, err
 	}
@@ -45,18 +53,21 @@ func GenerateTokenJWT(user *model.User, isRefresh bool) (string, *time.Time, err
 
 func VerifyTokenJWT(tokenString string, isRefresh bool) (*model.User, error) {
 	var (
-		secretKey string
-		user      = new(model.User)
+		user = new(model.User)
 	)
 
-	if isRefresh {
-		secretKey = config.Config.JWT.RefreshSecret
-	} else {
-		secretKey = config.Config.JWT.AccessSecret
+	publicKeyBytes, err := os.ReadFile(config.Config.JWT.PublicKeyPathFile)
+	if err != nil {
+		return nil, err
+	}
+
+	publicKey, err := jwt.ParseRSAPublicKeyFromPEM(publicKeyBytes)
+	if err != nil {
+		return nil, err
 	}
 
 	token, err := jwt.ParseWithClaims(tokenString, &config.JWTClaim{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(secretKey), nil
+		return publicKey, nil
 	})
 	if err != nil {
 		return nil, err
