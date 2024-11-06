@@ -13,17 +13,17 @@ import (
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/service"
 )
 
-type UserController struct {
-	Service service.UserService
+type RoleController struct {
+	Service service.RoleService
 }
 
-func NewUserController(s service.UserService) *UserController {
-	return &UserController{
-		Service: s,
+func NewRoleController(roleService service.RoleService) *RoleController {
+	return &RoleController{
+		Service: roleService,
 	}
 }
 
-func (h *UserController) Get(c echo.Context) error {
+func (h *RoleController) Get(c echo.Context) error {
 	var (
 		ctx        = c.Request().Context()
 		pagination model.Pagination
@@ -33,15 +33,15 @@ func (h *UserController) Get(c echo.Context) error {
 	pagination.Limit, _ = strconv.Atoi(c.QueryParam("limit"))
 	pagination.SetDefault()
 
-	// data, err := h.Service.Get(ctx)
-	data, err := h.Service.GetWithPagination(ctx, &pagination)
+	data, err := h.Service.Get(ctx)
+	// data, err := h.Service.GetWithPagination(ctx, &pagination)
 	if err != nil {
 		return response.BuildErrorResponse(c, err)
 	}
-	return response.BuildSuccessResponse(c, http.StatusOK, "Berhasil mendapatkan data user", data)
+	return response.BuildSuccessResponse(c, http.StatusOK, "Berhasil mendapatkan data role", data)
 }
 
-func (h *UserController) GetById(c echo.Context) error {
+func (h *RoleController) GetById(c echo.Context) error {
 	var (
 		ctx   = c.Request().Context()
 		id, _ = uuid.Parse(c.Param("id"))
@@ -51,13 +51,13 @@ func (h *UserController) GetById(c echo.Context) error {
 	if err != nil {
 		return response.BuildErrorResponse(c, err)
 	}
-	return response.BuildSuccessResponse(c, http.StatusOK, "Berhasil mendapatkan data user", data)
+	return response.BuildSuccessResponse(c, http.StatusOK, "Berhasil mendapatkan data role", data)
 }
 
-func (h *UserController) Create(c echo.Context) error {
+func (h *RoleController) Create(c echo.Context) error {
 	var (
 		ctx     = c.Request().Context()
-		request dto.UserRequest
+		request dto.RoleRequest
 	)
 
 	if err := helper.BindRequest(c, &request, false); err != nil {
@@ -69,14 +69,14 @@ func (h *UserController) Create(c echo.Context) error {
 		return response.BuildErrorResponse(c, err)
 	}
 
-	return response.BuildSuccessResponse(c, http.StatusCreated, "Berhasil menyimpan data user", map[string]string{"id": data})
+	return response.BuildSuccessResponse(c, http.StatusCreated, "Berhasil menyimpan data role", map[string]string{"id": data})
 }
 
-func (h *UserController) Update(c echo.Context) error {
+func (h *RoleController) Update(c echo.Context) error {
 	var (
 		ctx     = c.Request().Context()
 		id, _   = uuid.Parse(c.Param("id"))
-		request dto.UserRequest
+		request dto.RoleRequest
 	)
 
 	if err := helper.BindRequest(c, &request, false); err != nil {
@@ -88,10 +88,10 @@ func (h *UserController) Update(c echo.Context) error {
 		return response.BuildErrorResponse(c, err)
 	}
 
-	return response.BuildSuccessResponse(c, http.StatusOK, "Berhasil memperbarui data user", map[string]string{"id": data})
+	return response.BuildSuccessResponse(c, http.StatusOK, "Berhasil memperbarui data role", map[string]string{"id": data})
 }
 
-func (h *UserController) Delete(c echo.Context) error {
+func (h *RoleController) Delete(c echo.Context) error {
 	var (
 		ctx   = c.Request().Context()
 		id, _ = uuid.Parse(c.Param("id"))
@@ -101,5 +101,5 @@ func (h *UserController) Delete(c echo.Context) error {
 		return response.BuildErrorResponse(c, err)
 	}
 
-	return response.BuildSuccessResponse(c, http.StatusOK, "Berhasil menghapus data user", nil)
+	return response.BuildSuccessResponse(c, http.StatusOK, "Berhasil menghapus data role", nil)
 }

@@ -8,6 +8,7 @@ import (
 func RouteV1(av *APIVersion) {
 	userController := controller.NewUserController(av.contract.Service.User)
 	authController := controller.NewAuthController(av.contract.Service.Auth)
+	roleController := controller.NewRoleController(av.contract.Service.Role)
 
 	av.api.Use(middleware.LogMiddleware) // use middleware logger
 
@@ -27,4 +28,14 @@ func RouteV1(av *APIVersion) {
 	user.POST("", userController.Create)
 	user.PUT("/:id", userController.Update)
 	user.DELETE("/:id", userController.Delete)
+
+	// role routes
+	role := av.api.Group("/roles")
+	role.Use(middleware.JWTMiddleware()) // use middleware jwt general on role routes
+
+	role.GET("", roleController.Get)
+	role.GET("/:id", roleController.GetById)
+	role.POST("", roleController.Create)
+	role.PUT("/:id", roleController.Update)
+	role.DELETE("/:id", roleController.Delete)
 }

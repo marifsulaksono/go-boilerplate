@@ -35,7 +35,7 @@ func JWTMiddleware() echo.MiddlewareFunc {
 				return response.BuildErrorResponse(c, err)
 			}
 
-			c.Set("user", user) // set saves data in the context
+			c.Set("user_id", user.ID) // set saves data in the context
 
 			return next(c)
 		}

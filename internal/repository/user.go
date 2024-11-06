@@ -41,7 +41,7 @@ func (r *userRepository) Get(ctx context.Context) (data *[]model.User, err error
 	}
 
 	data = &[]model.User{}
-	if err := r.DB.Find(&data).Error; err != nil {
+	if err := r.DB.Joins("Role").Find(&data).Error; err != nil {
 		return nil, err
 	}
 
@@ -65,7 +65,7 @@ func (r *userRepository) GetWithPagination(ctx context.Context, params *model.Pa
 		db = db.Limit(params.Limit)
 	}
 
-	err = db.Find(&users).Error
+	err = db.Joins("Role").Find(&users).Error
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +88,7 @@ func (r *userRepository) GetWithPagination(ctx context.Context, params *model.Pa
 }
 
 func (r *userRepository) GetById(ctx context.Context, id uuid.UUID) (data *model.User, err error) {
-	err = r.DB.First(&data, id).Error
+	err = r.DB.Joins("Role").First(&data, id).Error
 	return
 }
 
@@ -98,6 +98,13 @@ func (r *userRepository) GetByEmail(ctx context.Context, email string) (data *mo
 }
 
 func (r *userRepository) Create(ctx context.Context, payload *model.User) (string, error) {
+	userID, ok := ctx.Value("user_id").(string)
+	if !ok || userID == "" {
+		payload.CreatedBy = ""
+	} else {
+		payload.CreatedBy = userID
+	}
+
 	err := r.DB.WithContext(ctx).Create(&payload).Clauses(clause.Returning{
 		Columns: []clause.Column{
 			{Name: "id"},
@@ -108,6 +115,12 @@ func (r *userRepository) Create(ctx context.Context, payload *model.User) (strin
 }
 
 func (r *userRepository) Update(ctx context.Context, payload *model.User, id uuid.UUID) (string, error) {
+	userID, ok := ctx.Value("user_id").(string)
+	if !ok || userID == "" {
+		payload.UpdatedBy = ""
+	} else {
+		payload.UpdatedBy = userID
+	}
 	err := r.DB.Model(&model.User{}).Where("id = ?", id).Updates(payload).Error
 	if err != nil {
 		return "", err
