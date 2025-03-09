@@ -11,6 +11,7 @@ import (
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/pkg/helper"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/pkg/utils/response"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/repository/interfaces"
+	sinterface "github.com/marifsulaksono/go-echo-boilerplate/internal/service/interfaces"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -19,17 +20,7 @@ type userService struct {
 	UserRepository interfaces.UserRepository
 }
 
-type UserService interface {
-	Get(ctx context.Context) (*[]model.User, error)
-	GetWithPagination(ctx context.Context, params *model.Pagination) (data *model.PaginationResponse, err error)
-	GetById(ctx context.Context, id uuid.UUID) (*model.User, error)
-	GetByEmail(ctx context.Context, email string) (*model.User, error)
-	Create(ctx context.Context, payload *model.User) (string, error)
-	Update(ctx context.Context, payload *model.User, id uuid.UUID) (string, error)
-	Delete(ctx context.Context, id uuid.UUID) error
-}
-
-func NewUserService(r *repository.Contract) UserService {
+func NewUserService(r *repository.Contract) sinterface.UserService {
 	return &userService{
 		UserRepository: r.User,
 	}

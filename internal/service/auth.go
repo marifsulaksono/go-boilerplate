@@ -10,6 +10,7 @@ import (
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/pkg/helper"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/pkg/utils/response"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/repository/interfaces"
+	sinterface "github.com/marifsulaksono/go-echo-boilerplate/internal/service/interfaces"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -18,13 +19,7 @@ type authService struct {
 	UserRepository interfaces.UserRepository
 }
 
-type AuthService interface {
-	Login(ctx context.Context, payload *model.Login, ip string) (model.LoginResponse, error)
-	RefreshAccessToken(ctx context.Context, refreshToken string) (*model.LoginResponse, error)
-	Logout(ctx context.Context, refreshToken string) error
-}
-
-func NewAuthService(r *repository.Contract) AuthService {
+func NewAuthService(r *repository.Contract) sinterface.AuthService {
 	return &authService{
 		AuthRepository: r.Auth,
 		UserRepository: r.User,

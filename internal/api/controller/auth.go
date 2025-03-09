@@ -7,7 +7,7 @@ import (
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/api/dto"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/pkg/helper"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/pkg/utils/response"
-	"github.com/marifsulaksono/go-echo-boilerplate/internal/service"
+	service "github.com/marifsulaksono/go-echo-boilerplate/internal/service/interfaces"
 )
 
 type AuthController struct {
