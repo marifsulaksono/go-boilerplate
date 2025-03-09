@@ -28,6 +28,35 @@ You can use this repository for your template project by click [use this templat
 * Viper (See [documentation](https://pkg.go.dev/github.com/dvln/viper))
 * Logrus (See [documentation](https://pkg.go.dev/github.com/sirupsen/logrus))
 
+## Folder Structure
+```
+go-echo-boilerplate/  
+├── cmd/                 # Entry point for the application  
+│   └── api/             # REST API starter  
+├── internal/            # Internal application logic  
+│   ├── api/             # REST API core logic  
+│   │   ├── controller/  # Handles request & response processing  
+│   │   ├── dto/         # Data transfer objects (request & response)  
+│   │   ├── middleware/  # Custom middleware implementations  
+│   │   ├── routes/      # API route definitions  
+│   ├── config/          # Configuration & dependency injection  
+│   ├── constants/       # Global constant variables  
+│   ├── contract/        # Dependency injection contracts  
+│   │   ├── common/      # Third-party dependencies  
+│   │   ├── repository/  # Repository layer contracts  
+│   │   └── service/     # Service layer contracts  
+│   ├── migrations/      # Database migration files  
+│   ├── model/           # Database models/entities  
+│   ├── pkg/             # Utility functions & helpers  
+│   ├── repository/      # Data access layer  
+│   │   ├── interfaces/  # Repository interface definitions  
+│   └── service/         # Business logic layer  
+│   │   ├── interfaces/  # Service interface definitions  
+├── logs/                # Application log files  
+├── pkg/                 # Shared utilities  
+└── .env                 # Environment variables
+```
+
 ## Getting Started
 
 ### Installation
