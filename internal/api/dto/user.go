@@ -20,19 +20,19 @@ type (
 	}
 )
 
-func (u *GetUserRequest) ParseToModel() *model.UserRequest {
+func (d *GetUserRequest) ParseToModel() *model.UserRequest {
 	return &model.UserRequest{
-		Page:   u.Page,
-		Limit:  u.Limit,
-		Search: u.Search,
+		Page:   d.Page,
+		Limit:  d.Limit,
+		Search: d.Search,
 	}
 }
 
-func (u *UserRequest) ParseToModel() *model.User {
+func (d *UserRequest) ParseToModel() *model.User {
 	return &model.User{
-		Name:     u.Name,
-		Email:    u.Email,
-		Password: u.Password,
-		RoleID:   u.RoleID,
+		Name:     d.Name,
+		Email:    d.Email,
+		Password: d.Password,
+		RoleID:   d.RoleID,
 	}
 }

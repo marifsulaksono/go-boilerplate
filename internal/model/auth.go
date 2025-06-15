@@ -3,11 +3,18 @@ package model
 import "time"
 
 type (
+	Register struct {
+		Name     string `json:"name"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+
 	Login struct {
 		GrantType string `json:"grant_type"`
 		Username  string `json:"username"`
 		Email     string `json:"email"`
 		Password  string `json:"password"`
+		IP        string `json:"ip"`
 	}
 
 	LoginResponse struct {

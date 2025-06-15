@@ -65,7 +65,6 @@ func (db *Database) ConnectDatabase(ctx context.Context, database string) (DB *g
 
 func (db *Database) mysqlConnector(looger *logger.Interface) (*gorm.DB, error) {
 	url := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", db.Username, db.Password, db.Host, db.Port, db.Name)
-	log.Println("URL config mysql:", url)
 	return gorm.Open(mysql.Open(url), &gorm.Config{
 		Logger: *looger,
 	})
@@ -73,7 +72,6 @@ func (db *Database) mysqlConnector(looger *logger.Interface) (*gorm.DB, error) {
 
 func (db *Database) postgreConnector(looger *logger.Interface) (*gorm.DB, error) {
 	url := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Jakarta", db.Host, db.Username, db.Password, db.Name, db.Port)
-	fmt.Println("URL config postgres:", url)
 	return gorm.Open(postgres.Open(url), &gorm.Config{
 		Logger: *looger,
 	})

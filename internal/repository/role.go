@@ -78,6 +78,18 @@ func (r *roleRepository) GetById(ctx context.Context, id uuid.UUID) (data *model
 	return
 }
 
+func (r *roleRepository) GetByName(ctx context.Context, name string) (data *model.Role, err error) {
+	err = r.DB.First(&data, "name = ?", name).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, response.NewCustomError(http.StatusNotFound, "Data tidak ditemukan", nil)
+		}
+		return nil, response.NewCustomError(http.StatusInternalServerError, "Terjadi kesalahan pada server", err)
+	}
+
+	return
+}
+
 func (r *roleRepository) Create(ctx context.Context, payload *model.Role) (string, error) {
 	err := r.DB.WithContext(ctx).Create(&payload).Clauses(clause.Returning{
 		Columns: []clause.Column{

@@ -20,6 +20,24 @@ func NewAuthController(s service.AuthService) *AuthController {
 	}
 }
 
+func (h *AuthController) Register(c echo.Context) error {
+	var (
+		ctx     = c.Request().Context()
+		request dto.RegisterRequest
+	)
+
+	if err := helper.BindRequest(c, &request, false); err != nil {
+		return response.BuildErrorResponse(c, err)
+	}
+
+	err := h.Service.Register(ctx, request.ParseToModel())
+	if err != nil {
+		return response.BuildErrorResponse(c, err)
+	}
+
+	return response.BuildSuccessResponse(c, http.StatusOK, "Register berhasil", nil, nil)
+}
+
 func (h *AuthController) Login(c echo.Context) error {
 	var (
 		ctx     = c.Request().Context()
@@ -31,7 +49,7 @@ func (h *AuthController) Login(c echo.Context) error {
 		return response.BuildErrorResponse(c, err)
 	}
 
-	data, err := h.Service.Login(ctx, request.ParseToModel(), ip)
+	data, err := h.Service.Login(ctx, request.ParseToModel(ip))
 	if err != nil {
 		return response.BuildErrorResponse(c, err)
 	}

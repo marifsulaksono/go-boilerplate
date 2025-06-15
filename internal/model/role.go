@@ -15,7 +15,7 @@ You can adjust the structure's field as your need
 type (
 	Role struct {
 		ID   uuid.UUID `json:"id" gorm:"primaryKey;type:varchar(36)"`
-		Name string    `json:"name" gorm:"type:varchar(100)"`
+		Name string    `json:"name" gorm:"unique;type:varchar(100)"`
 		Model
 	}
 )

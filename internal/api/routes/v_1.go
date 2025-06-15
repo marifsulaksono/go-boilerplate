@@ -15,6 +15,7 @@ func RouteV1(av *APIVersion) {
 	// auth routes
 	auth := av.api.Group("/auth")
 
+	auth.POST("/register", authController.Register)
 	auth.POST("/login", authController.Login, middleware.RateLimitMiddleware(5, 300)) // limit to 5 requests per 5 minutes
 	auth.POST("/new-access-token", authController.RefreshAccessToken)
 	auth.POST("/logout", authController.Logout)

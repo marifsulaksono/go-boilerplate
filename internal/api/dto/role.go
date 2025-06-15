@@ -6,8 +6,8 @@ type RoleRequest struct {
 	Name string `json:"name" validate:"required"`
 }
 
-func (r *RoleRequest) ParseToModel() *model.Role {
+func (d *RoleRequest) ParseToModel() *model.Role {
 	return &model.Role{
-		Name: r.Name,
+		Name: d.Name,
 	}
 }

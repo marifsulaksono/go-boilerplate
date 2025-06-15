@@ -7,7 +7,8 @@ import (
 )
 
 type AuthService interface {
-	Login(ctx context.Context, payload *model.Login, ip string) (model.LoginResponse, error)
+	Register(ctx context.Context, payload *model.Register) error
+	Login(ctx context.Context, payload *model.Login) (model.LoginResponse, error)
 	RefreshAccessToken(ctx context.Context, refreshToken string) (*model.LoginResponse, error)
 	Logout(ctx context.Context, refreshToken string) error
 }
