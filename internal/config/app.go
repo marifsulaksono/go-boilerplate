@@ -1,5 +1,7 @@
 package config
 
 type App struct {
-	Port int `json:"port"`
+	Name string `json:"name"`
+	Port int    `json:"port"`
+	UID  string `json:"uid"`
 }

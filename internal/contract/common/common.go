@@ -16,8 +16,9 @@ type Contract struct {
 	Redis *redis.Client
 }
 
+// NewCommon is used to prepare common dependency injection
 func NewCommon(ctx context.Context) (*Contract, error) {
-	db, err := config.Config.Database.ConnectDatabase(ctx, constants.DB_POSTGRESQL)
+	db, err := config.Config.Database.ConnectDatabase(ctx, constants.DB_MYSQL)
 	if err != nil {
 		return nil, err
 	}
@@ -33,6 +34,7 @@ func NewCommon(ctx context.Context) (*Contract, error) {
 	}, nil
 }
 
+// GORM Migration
 func (c *Contract) AutoMigrate() {
 	if err := c.DB.AutoMigrate(
 		&model.User{},
@@ -41,4 +43,14 @@ func (c *Contract) AutoMigrate() {
 		log.Fatalf("Error on migration database: %v", err)
 	}
 	log.Println("Migration successfully.....")
+}
+
+// Close all connection
+func (c *Contract) Close() {
+	c.Redis.Close()
+	sqlDB, err := c.DB.DB()
+	if err != nil {
+		log.Fatal(err)
+	}
+	sqlDB.Close()
 }

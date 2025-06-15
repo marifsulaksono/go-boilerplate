@@ -26,12 +26,8 @@ func NewUserService(r *repository.Contract) sinterface.UserService {
 	}
 }
 
-func (s *userService) Get(ctx context.Context) (*[]model.User, error) {
-	return s.UserRepository.Get(ctx)
-}
-
-func (s *userService) GetWithPagination(ctx context.Context, params *model.Pagination) (data *model.PaginationResponse, err error) {
-	return s.UserRepository.GetWithPagination(ctx, params)
+func (s *userService) Get(ctx context.Context, params *model.UserRequest) (data []model.User, total int64, err error) {
+	return s.UserRepository.Get(ctx, params)
 }
 
 func (s *userService) GetById(ctx context.Context, id uuid.UUID) (data *model.User, err error) {

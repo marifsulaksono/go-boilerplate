@@ -12,6 +12,7 @@ import (
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/contract"
 )
 
+// more info contact me at @marifsulaksono
 func main() {
 	var ctx = context.Background()
 	err := config.Load(ctx, true)
@@ -19,13 +20,14 @@ func main() {
 		log.Fatalf("Error load configuration with value isEnvFile = true: %v", err)
 	}
 
-	contact, err := contract.NewContract(ctx)
+	contract, err := contract.NewContract(ctx)
 	if err != nil {
 		log.Fatalf("Error setup contract / dependecy injection: %v", err)
 	}
-	contact.Common.AutoMigrate()
 
-	e := api.NewHTTPServer(contact)
+	contract.Common.AutoMigrate()
+
+	e := api.NewHTTPServer(contract)
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, syscall.SIGTERM, syscall.SIGINT)
 	go func() {
@@ -36,5 +38,7 @@ func main() {
 
 	log.Println("Shutting down....")
 	// put all processes to be stopped before successful termination here
-	log.Println("Server gracefully terminated.")
+	contract.Common.Close()
+
+	log.Printf("Server %s with UID: %s is gracefully terminated.", config.Config.App.Name, config.Config.App.UID)
 }

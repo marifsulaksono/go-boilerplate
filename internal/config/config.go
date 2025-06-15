@@ -3,6 +3,7 @@ package config
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 )
@@ -42,7 +43,9 @@ func Load(ctx context.Context, isEnvFile bool) error {
 	// prepare configuration values
 	Config = &Configuration{
 		App: App{
+			Name: viper.GetString("APP_NAME"),
 			Port: viper.GetInt("APP_PORT"),
+			UID:  uuid.NewString(),
 		},
 		Database: Database{
 			Host:     viper.GetString("DATABASE_HOST"),

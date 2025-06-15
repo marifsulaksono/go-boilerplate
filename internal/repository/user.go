@@ -2,13 +2,9 @@ package repository
 
 import (
 	"context"
-	"encoding/json"
-	"log"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/model"
-	"github.com/marifsulaksono/go-echo-boilerplate/internal/pkg/helper"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/repository/interfaces"
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
@@ -27,30 +23,27 @@ func NewUserRepository(db *gorm.DB, rdscli *redis.Client) interfaces.UserReposit
 	}
 }
 
-func (r *userRepository) Get(ctx context.Context) (data *[]model.User, err error) {
-	const usersDataKey = "list-users-data"
-	cachedUsers, err := r.Redis.Get(ctx, usersDataKey).Result()
-	if err == nil {
-		if err = json.Unmarshal([]byte(cachedUsers), &data); err != nil {
-			log.Printf("Error unmarshaling user data from Redis: %v", err)
-		} else {
-			return data, nil
-		}
-	} else if err != redis.Nil {
-		log.Printf("Error fetching user data from Redis: %v", err)
+func (r *userRepository) Get(ctx context.Context, params *model.UserRequest) (data []model.User, total int64, err error) {
+	var (
+		offset = (params.Page - 1) * params.Limit
+	)
+
+	db := r.DB
+	if params.Search != "" {
+		db = db.Where("users.name ILIKE ? OR users.email ILIKE ?", "%"+params.Search+"%", "%"+params.Search+"%")
 	}
 
-	data = &[]model.User{}
-	if err := r.DB.Joins("Role").Find(&data).Error; err != nil {
-		return nil, err
-	}
-
-	err = helper.SetRedisJSONCache(ctx, r.Redis, usersDataKey, data, time.Duration(300)*time.Second)
+	err = db.Joins("Role").Offset(offset).Limit(params.Limit).Find(&data).Error
 	if err != nil {
-		log.Printf("Error setting user data in Redis: %v", err)
+		return nil, 0, err
 	}
 
-	return data, nil
+	err = r.DB.Model(&model.User{}).Where("deleted_at IS NULL").Count(&total).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return
 }
 
 func (r *userRepository) GetWithPagination(ctx context.Context, params *model.Pagination) (data *model.PaginationResponse, err error) {

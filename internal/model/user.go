@@ -22,6 +22,12 @@ type (
 		Role     Role      `json:"role" gorm:"foreignKey:RoleID;references:ID"`
 		Model
 	}
+
+	UserRequest struct {
+		Page   int    `json:"page"`
+		Limit  int    `json:"limit"`
+		Search string `json:"search"`
+	}
 )
 
 func (u *User) BeforeCreate(tx *gorm.DB) error {

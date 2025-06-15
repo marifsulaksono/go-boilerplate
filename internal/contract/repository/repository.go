@@ -14,6 +14,7 @@ type Contract struct {
 	Role interfaces.RoleRepository
 }
 
+// NewRepository is used to prepare repository dependency injection
 func NewRepository(ctx context.Context, common *common.Contract) (*Contract, error) {
 	role := repository.NewRoleRepository(common.DB)
 	user := repository.NewUserRepository(common.DB, common.Redis)

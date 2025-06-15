@@ -34,11 +34,10 @@ func (h *RoleController) Get(c echo.Context) error {
 	pagination.SetDefault()
 
 	data, err := h.Service.Get(ctx)
-	// data, err := h.Service.GetWithPagination(ctx, &pagination)
 	if err != nil {
 		return response.BuildErrorResponse(c, err)
 	}
-	return response.BuildSuccessResponse(c, http.StatusOK, "Berhasil mendapatkan data role", data)
+	return response.BuildSuccessResponse(c, http.StatusOK, "Berhasil mendapatkan data role", data, nil)
 }
 
 func (h *RoleController) GetById(c echo.Context) error {
@@ -51,7 +50,7 @@ func (h *RoleController) GetById(c echo.Context) error {
 	if err != nil {
 		return response.BuildErrorResponse(c, err)
 	}
-	return response.BuildSuccessResponse(c, http.StatusOK, "Berhasil mendapatkan data role", data)
+	return response.BuildSuccessResponse(c, http.StatusOK, "Berhasil mendapatkan data role", data, nil)
 }
 
 func (h *RoleController) Create(c echo.Context) error {
@@ -69,7 +68,7 @@ func (h *RoleController) Create(c echo.Context) error {
 		return response.BuildErrorResponse(c, err)
 	}
 
-	return response.BuildSuccessResponse(c, http.StatusCreated, "Berhasil menyimpan data role", map[string]string{"id": data})
+	return response.BuildSuccessResponse(c, http.StatusCreated, "Berhasil menyimpan data role", map[string]string{"id": data}, nil)
 }
 
 func (h *RoleController) Update(c echo.Context) error {
@@ -88,7 +87,7 @@ func (h *RoleController) Update(c echo.Context) error {
 		return response.BuildErrorResponse(c, err)
 	}
 
-	return response.BuildSuccessResponse(c, http.StatusOK, "Berhasil memperbarui data role", map[string]string{"id": data})
+	return response.BuildSuccessResponse(c, http.StatusOK, "Berhasil memperbarui data role", map[string]string{"id": data}, nil)
 }
 
 func (h *RoleController) Delete(c echo.Context) error {
@@ -101,5 +100,5 @@ func (h *RoleController) Delete(c echo.Context) error {
 		return response.BuildErrorResponse(c, err)
 	}
 
-	return response.BuildSuccessResponse(c, http.StatusOK, "Berhasil menghapus data role", nil)
+	return response.BuildSuccessResponse(c, http.StatusOK, "Berhasil menghapus data role", nil, nil)
 }

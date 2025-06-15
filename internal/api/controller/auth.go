@@ -36,7 +36,7 @@ func (h *AuthController) Login(c echo.Context) error {
 		return response.BuildErrorResponse(c, err)
 	}
 
-	return response.BuildSuccessResponse(c, http.StatusOK, "Login berhasil", data)
+	return response.BuildSuccessResponse(c, http.StatusOK, "Login berhasil", data, nil)
 }
 
 func (h *AuthController) RefreshAccessToken(c echo.Context) error {
@@ -54,7 +54,7 @@ func (h *AuthController) RefreshAccessToken(c echo.Context) error {
 		return response.BuildErrorResponse(c, err)
 	}
 
-	return response.BuildSuccessResponse(c, http.StatusOK, "Berhasil mendapatkan access token baru", data)
+	return response.BuildSuccessResponse(c, http.StatusOK, "Berhasil mendapatkan access token baru", data, nil)
 }
 
 func (h *AuthController) Logout(c echo.Context) error {
@@ -72,5 +72,5 @@ func (h *AuthController) Logout(c echo.Context) error {
 		return response.BuildErrorResponse(c, err)
 	}
 
-	return response.BuildSuccessResponse(c, http.StatusOK, "Logout berhasil", nil)
+	return response.BuildSuccessResponse(c, http.StatusOK, "Logout berhasil", nil, nil)
 }

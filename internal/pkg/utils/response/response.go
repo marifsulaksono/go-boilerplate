@@ -9,16 +9,18 @@ import (
 )
 
 type JSONResponse struct {
-	Code    string      `json:"code"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data,omitempty"`
+	Code     string      `json:"code"`
+	Message  string      `json:"message"`
+	Data     interface{} `json:"data,omitempty"`
+	Metadata interface{} `json:"metadata,omitempty"`
 }
 
-func BuildSuccessResponse(c echo.Context, statusCode int, message string, data any) error {
+func BuildSuccessResponse(c echo.Context, statusCode int, message string, data any, metadata any) error {
 	return c.JSON(statusCode, JSONResponse{
-		Code:    constants.RESPONSE_SUCCESS,
-		Message: message,
-		Data:    data,
+		Code:     constants.RESPONSE_SUCCESS,
+		Message:  message,
+		Data:     data,
+		Metadata: metadata,
 	})
 }
 

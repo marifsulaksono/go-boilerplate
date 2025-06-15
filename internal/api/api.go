@@ -32,7 +32,7 @@ func (s *HTTPServer) RunHTTPServer() {
 	routes.RouteV1(&v1)
 
 	port := fmt.Sprintf(":%d", config.Config.App.Port)
-	log.Printf("Server running at port :%s", port)
+	log.Printf("Running %s server at port %s with UID: %s", config.Config.App.Name, port, config.Config.App.UID)
 	if err := s.e.Start(port); err != nil {
 		log.Fatalf("Failed to running server: %v", err)
 	}

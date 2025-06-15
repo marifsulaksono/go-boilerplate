@@ -14,6 +14,7 @@ type Contract struct {
 	Role interfaces.RoleService
 }
 
+// NewService is used to prepare service dependency injection
 func NewService(ctx context.Context, r *repository.Contract) (*Contract, error) {
 	user := service.NewUserService(r)
 	auth := service.NewAuthService(r)
