@@ -8,6 +8,12 @@ import (
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/repository/interfaces"
 )
 
+type RepositoryContract interface {
+	GetUser() interfaces.UserRepository
+	GetAuth() interfaces.AuthRepository
+	GetRole() interfaces.RoleRepository
+}
+
 type Contract struct {
 	User interfaces.UserRepository
 	Auth interfaces.AuthRepository
@@ -15,7 +21,7 @@ type Contract struct {
 }
 
 // NewRepository is used to prepare repository dependency injection
-func NewRepository(ctx context.Context, common *common.Contract) (*Contract, error) {
+func NewRepository(ctx context.Context, common *common.Contract) (RepositoryContract, error) {
 	role := repository.NewRoleRepository(common.DB)
 	user := repository.NewUserRepository(common.DB, common.Redis)
 	auth := repository.NewAuthRepository(common.DB)
@@ -25,4 +31,16 @@ func NewRepository(ctx context.Context, common *common.Contract) (*Contract, err
 		Auth: auth,
 		Role: role,
 	}, nil
+}
+
+func (r *Contract) GetUser() interfaces.UserRepository {
+	return r.User
+}
+
+func (r *Contract) GetAuth() interfaces.AuthRepository {
+	return r.Auth
+}
+
+func (r *Contract) GetRole() interfaces.RoleRepository {
+	return r.Role
 }

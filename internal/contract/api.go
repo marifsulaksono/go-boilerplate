@@ -9,8 +9,8 @@ import (
 )
 
 type Contract struct {
-	Service    *service.Contract
-	Repository *repository.Contract
+	Service    service.ServiceContract
+	Repository repository.RepositoryContract
 	Common     *common.Contract
 }
 

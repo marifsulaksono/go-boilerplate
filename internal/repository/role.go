@@ -24,46 +24,17 @@ func NewRoleRepository(db *gorm.DB) interfaces.RoleRepository {
 	}
 }
 
-func (r *roleRepository) GetWithPagination(ctx context.Context, params *model.Pagination) (data *model.PaginationResponse, err error) {
-	var roles []model.Role
-	offset := (params.Page - 1) * params.Limit
+func (r *roleRepository) Get(ctx context.Context, params *model.RoleRequest) (data []model.Role, err error) {
 	db := r.DB
-	if params.Page > 0 {
-		db = db.Offset(offset)
+	if params.Search != "" {
+		db = db.Where("roles.name ILIKE ?", "%"+params.Search+"%")
 	}
 
-	if params.Limit > 0 {
-		db = db.Limit(params.Limit)
+	if err = db.Find(&data).Error; err != nil {
+		return
 	}
 
-	err = db.Find(&roles).Error
-	if err != nil {
-		return nil, err
-	}
-
-	var count int64
-	err = r.DB.Model(&model.Role{}).Where("deleted_at IS NULL").Count(&count).Error
-	if err != nil {
-		return nil, err
-	}
-
-	data = &model.PaginationResponse{
-		List:         roles,
-		Page:         params.Page,
-		Limit:        params.Limit,
-		TotalPerPage: len(roles),
-		TotalData:    int(count),
-	}
-	return data, nil
-}
-
-func (r *roleRepository) Get(ctx context.Context) (data *[]model.Role, err error) {
-	data = &[]model.Role{}
-	if err := r.DB.Find(&data).Error; err != nil {
-		return nil, err
-	}
-
-	return data, nil
+	return
 }
 
 func (r *roleRepository) GetById(ctx context.Context, id uuid.UUID) (data *model.Role, err error) {

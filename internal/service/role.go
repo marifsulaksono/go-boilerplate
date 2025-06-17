@@ -14,14 +14,14 @@ type roleService struct {
 	roleRepo interfaces.RoleRepository
 }
 
-func NewRoleService(r *repository.Contract) sinterface.RoleService {
+func NewRoleService(r repository.RepositoryContract) sinterface.RoleService {
 	return &roleService{
-		roleRepo: r.Role,
+		roleRepo: r.GetRole(),
 	}
 }
 
-func (s *roleService) Get(ctx context.Context) (data *[]model.Role, err error) {
-	return s.roleRepo.Get(ctx)
+func (s *roleService) Get(ctx context.Context, params *model.RoleRequest) (data []model.Role, err error) {
+	return s.roleRepo.Get(ctx, params)
 }
 
 func (s *roleService) GetById(ctx context.Context, id uuid.UUID) (data *model.Role, err error) {

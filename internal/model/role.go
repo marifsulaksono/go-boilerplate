@@ -18,6 +18,12 @@ type (
 		Name string    `json:"name" gorm:"unique;type:varchar(100)"`
 		Model
 	}
+
+	RoleRequest struct {
+		Page   int    `json:"page"`
+		Limit  int    `json:"limit"`
+		Search string `json:"search"`
+	}
 )
 
 func (u *Role) BeforeCreate(tx *gorm.DB) error {

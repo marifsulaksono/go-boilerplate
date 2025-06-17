@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"errors"
-	"log"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -23,11 +22,11 @@ type authService struct {
 	RoleRepository interfaces.RoleRepository
 }
 
-func NewAuthService(r *repository.Contract) sinterface.AuthService {
+func NewAuthService(r repository.RepositoryContract) sinterface.AuthService {
 	return &authService{
-		AuthRepository: r.Auth,
-		UserRepository: r.User,
-		RoleRepository: r.Role,
+		AuthRepository: r.GetAuth(),
+		UserRepository: r.GetUser(),
+		RoleRepository: r.GetRole(),
 	}
 }
 
@@ -112,13 +111,11 @@ func (s *authService) RefreshAccessToken(ctx context.Context, refreshToken strin
 
 	user, err := helper.VerifyTokenJWT(token.RefreshToken, true)
 	if err != nil {
-		log.Printf("Gagal memverifikasi refresh token: %v", err)
 		return nil, response.NewCustomError(http.StatusInternalServerError, "Gagal memverifikasi token", nil)
 	}
 
 	accessToken, expiredAt, err := helper.GenerateTokenJWT(user, false)
 	if err != nil {
-		log.Printf("Gagal generate access token: %v", err)
 		return nil, response.NewCustomError(http.StatusInternalServerError, "Gagal menerbitkan token", nil)
 	}
 

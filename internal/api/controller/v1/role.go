@@ -1,39 +1,34 @@
-package controller
+package v1
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
-	"github.com/marifsulaksono/go-echo-boilerplate/internal/api/dto"
-	"github.com/marifsulaksono/go-echo-boilerplate/internal/model"
+	"github.com/marifsulaksono/go-echo-boilerplate/internal/api/controller/v1/dto"
+	"github.com/marifsulaksono/go-echo-boilerplate/internal/contract/service"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/pkg/helper"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/pkg/utils/response"
-	service "github.com/marifsulaksono/go-echo-boilerplate/internal/service/interfaces"
+	"github.com/marifsulaksono/go-echo-boilerplate/internal/service/interfaces"
 )
 
 type RoleController struct {
-	Service service.RoleService
+	Service interfaces.RoleService
 }
 
-func NewRoleController(roleService service.RoleService) *RoleController {
+func NewRoleController(svc service.ServiceContract) *RoleController {
 	return &RoleController{
-		Service: roleService,
+		Service: svc.GetRole(),
 	}
 }
 
 func (h *RoleController) Get(c echo.Context) error {
 	var (
-		ctx        = c.Request().Context()
-		pagination model.Pagination
+		ctx = c.Request().Context()
+		req dto.GetRoleRequest
 	)
 
-	pagination.Page, _ = strconv.Atoi(c.QueryParam("page"))
-	pagination.Limit, _ = strconv.Atoi(c.QueryParam("limit"))
-	pagination.SetDefault()
-
-	data, err := h.Service.Get(ctx)
+	data, err := h.Service.Get(ctx, req.ParseToModel())
 	if err != nil {
 		return response.BuildErrorResponse(c, err)
 	}

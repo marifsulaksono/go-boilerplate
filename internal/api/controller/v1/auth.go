@@ -1,22 +1,23 @@
-package controller
+package v1
 
 import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/marifsulaksono/go-echo-boilerplate/internal/api/dto"
+	"github.com/marifsulaksono/go-echo-boilerplate/internal/api/controller/v1/dto"
+	"github.com/marifsulaksono/go-echo-boilerplate/internal/contract/service"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/pkg/helper"
 	"github.com/marifsulaksono/go-echo-boilerplate/internal/pkg/utils/response"
-	service "github.com/marifsulaksono/go-echo-boilerplate/internal/service/interfaces"
+	"github.com/marifsulaksono/go-echo-boilerplate/internal/service/interfaces"
 )
 
 type AuthController struct {
-	Service service.AuthService
+	Service interfaces.AuthService
 }
 
-func NewAuthController(s service.AuthService) *AuthController {
+func NewAuthController(svc service.ServiceContract) *AuthController {
 	return &AuthController{
-		Service: s,
+		Service: svc.GetAuth(),
 	}
 }
 

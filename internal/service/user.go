@@ -20,9 +20,9 @@ type userService struct {
 	UserRepository interfaces.UserRepository
 }
 
-func NewUserService(r *repository.Contract) sinterface.UserService {
+func NewUserService(r repository.RepositoryContract) sinterface.UserService {
 	return &userService{
-		UserRepository: r.User,
+		UserRepository: r.GetUser(),
 	}
 }
 
