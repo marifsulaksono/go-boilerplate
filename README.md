@@ -31,30 +31,37 @@ You can use this repository for your template project by click [use this templat
 ## Folder Structure
 ```
 go-echo-boilerplate/  
-├── cmd/                 # Entry point for the application  
-│   └── api/             # REST API starter  
-├── internal/            # Internal application logic  
-│   ├── api/             # REST API core logic  
-│   │   ├── controller/  # Handles request & response processing  
-│   │   ├── dto/         # Data transfer objects (request & response)  
-│   │   ├── middleware/  # Custom middleware implementations  
-│   │   ├── routes/      # API route definitions  
-│   ├── config/          # Configuration & dependency injection  
-│   ├── constants/       # Global constant variables  
-│   ├── contract/        # Dependency injection contracts  
-│   │   ├── common/      # Third-party dependencies  
-│   │   ├── repository/  # Repository layer contracts  
-│   │   └── service/     # Service layer contracts  
-│   ├── migrations/      # Database migration files  
-│   ├── model/           # Database models/entities  
-│   ├── pkg/             # Utility functions & helpers  
-│   ├── repository/      # Data access layer  
-│   │   ├── interfaces/  # Repository interface definitions  
-│   └── service/         # Business logic layer  
-│   │   ├── interfaces/  # Service interface definitions  
-├── logs/                # Application log files  
-├── pkg/                 # Shared utilities  
+├── cmd/                 # Entry point for the application
+│   └── api/             # REST API starter
+├── internal/            # Internal application logic
+│   ├── api/             # REST API core logic
+│   │   ├── controller/  # Handles request & response processing
+│   │      ├── v1/       # Controller V1 Group
+│   │         ├── dto/   # Data transfer objects (request & response)
+│   │   ├── middleware/  # Custom middleware implementations
+│   │   ├── routes/      # API route definitions
+│   │      ├── v1/       # Routes V1 Group
+│   ├── config/          # Configuration & dependency injection
+│   ├── constants/       # Global constant variables
+│   ├── contract/        # Dependency injection contracts
+│   │   ├── common/      # Third-party dependencies
+│   │   ├── repository/  # Repository layer contracts
+│   │   └── service/     # Service layer contracts
+│   ├── migrations/      # Database migration files
+│   ├── model/           # Database models/entities
+│   ├── pkg/             # Utility functions & helpers
+│   │   ├── helper/      # Global helper function
+│   │   ├── utils/       # Global library used to utility
+│   ├── repository/      # Data access layer
+│   │   ├── interfaces/  # Repository interface definitions
+│   └── service/         # Business logic layer
+│   │   ├── interfaces/  # Service interface definitions
+│   │   ├── test/        # Service unit test
+├── logs/                # Application log files
+├── seeder/              # Seeder
+├── pkg/                 # Shared third party libraries
 └── .env                 # Environment variables
+└── Makefile             # Command Shortcut
 ```
 
 ## Getting Started
@@ -74,7 +81,7 @@ To install this project, clone the repository from GitHub:
 
 To run the project, use one of the following commands:
 
-* `make run-api` (using Makefile)
+* `make run` (using Makefile)
 * `go run cmd/api/main.go` (without Makefile)
 
 ### Using Docker
@@ -83,6 +90,23 @@ To build and run the project using Docker, use one of the following commands:
 
 * `docker build -t go-boilerplate:1.0` (using Dockerfile)
 * `docker compose up --build` (using Docker Compose)
+
+### Testing
+
+To run your testing, make sure you have generate mock folder and prepared file ```./shared/coverage/cover.out``` to store testing logs. you can use this following command:
+
+`make mock` (using Makefile)
+
+after generate mock files, use this following command to run all your testings:
+
+`make test` (using Makefile)
+
+it will be store the testing logs, to generate html version, use this following command:
+
+`make coverage` (using Makefile)
+
+> [!NOTE]
+> In this project, we used `bou.monkey` to patch unmocked function to reach perfect coverage, it will be need some configuration on your computer, please used with your needed or contact me for help.
 
 ## Contact
 ----------
